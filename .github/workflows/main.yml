@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Theos
-        uses: theos/setup-theos@master
+        uses: msy1727/setup-theos@master
 
       - name: Build Tweak
         run: |
