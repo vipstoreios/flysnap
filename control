@@ -1,0 +1,9 @@
+Package: com.flystore.snapcha
+Name: FlySnap
+Depends: mobilesubstrate
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Snapchat Tweak for Fly Store Users
+Maintainer: FlyStore
+Author: Ado
+Section: Tweaks
