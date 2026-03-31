@@ -8,19 +8,27 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Theos
+      - name: Setup Theos and SDK
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
-          echo "THEOS=/usr/local/theos" >> $GITHUB_ENV
+          # دابەزاندنی تیۆس لە شوێنی پڕۆژەکە
+          git clone --recursive https://github.com/theos/theos.git $GITHUB_WORKSPACE/theos
+          
+          # دابەزاندنی SDK بە شێوەیەکی پارێزراوتر
+          mkdir -p $GITHUB_WORKSPACE/theos/sdks
+          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz -o sdk.tar.xz
+          tar -xf sdk.tar.xz -C $GITHUB_WORKSPACE/theos/sdks
+          rm sdk.tar.xz
 
       - name: Build Tweak
         run: |
+          export THEOS=$GITHUB_WORKSPACE/theos
+          export PATH=$THEOS/bin:$PATH
           make package FINALPACKAGE=1
         env:
-          THEOS: /usr/local/theos
+          THEOS: ${{ github.workspace }}/theos
 
-      - name: Upload Dylib
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: flysnap-dylib
-          path: .theos/obj/install/*.dylib
+          name: FlySnap-Dylib
+          path: packages/*.deb
