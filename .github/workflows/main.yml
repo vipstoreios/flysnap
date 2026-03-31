@@ -1,0 +1,24 @@
+name: Build FlySnap
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Theos
+        uses: theo-s/setup-theos@master
+
+      - name: Build Tweak
+        run: |
+          make package
+        env:
+          THEOS: ${{ github.workspace }}/theos
+
+      - name: Upload Dylib
+        uses: actions/upload-artifact@v3
+        with:
+          name: flysnap-dylib
+          path: .theos/obj/debug/*.dylib
