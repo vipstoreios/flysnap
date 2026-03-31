@@ -8,21 +8,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Theos
+      - name: Setup Theos
         run: |
-          export THEOS=$GITHUB_WORKSPACE/theos
-          git clone --recursive https://github.com/theos/theos.git $THEOS
-          curl -LO https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz
-          mkdir -p $THEOS/sdks
-          tar -xf iPhoneOS14.5.sdk.tar.xz -C $THEOS/sdks
-          rm iPhoneOS14.5.sdk.tar.xz
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          echo "THEOS=/usr/local/theos" >> $GITHUB_ENV
 
       - name: Build Tweak
         run: |
-          export THEOS=$GITHUB_WORKSPACE/theos
           make package FINALPACKAGE=1
         env:
-          THEOS: ${{ github.workspace }}/theos
+          THEOS: /usr/local/theos
 
       - name: Upload Dylib
         uses: actions/upload-artifact@v4
